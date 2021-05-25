@@ -1,0 +1,9 @@
+<p-card header="{{product.code}} {{product.name}}" subheader="{{product.category}}" [style]="{width: '360px'}"
+        styleClass="ui-card-shadow">
+  <div> quantity: {{product.quantity}}</div>
+  <p-footer>
+    <button (click)="onDuplicateProduct()" pButton type="button" label="Duplicate" icon="pi pi-check"
+            style="margin-right: .25em">Дублировать
+    </button>
+  </p-footer>
+</p-card>
