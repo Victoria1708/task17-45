@@ -4,8 +4,8 @@ import {Product} from '../../app.component';
 
 @Component({
   selector: 'app-child',
-  templateUrl: './child.component.html',
-  styleUrls: ['./child.component.scss']
+  templateUrl: 'child.component.html',
+  styleUrls: ['child.component.scss']
 })
 export class ChildComponent implements OnInit {
 
@@ -16,12 +16,11 @@ export class ChildComponent implements OnInit {
     this.duplicateProduct = new EventEmitter<Product>();
   }
 
-  onDuplicateProduct(): void {
-    this.duplicateProduct.emit({code: 'CA001*', name: 'Tesla*', category: 'cars', quantity: 0});
-  }
-
   ngOnInit(): void {
     console.log(this.product);
   }
 
+  onDuplicateProduct(): void {
+    this.duplicateProduct.emit({code: 'CA001*', name: 'Tesla*', category: 'cars', quantity: 0});
+  }
 }

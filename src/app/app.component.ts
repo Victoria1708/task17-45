@@ -1,7 +1,8 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {CardModule} from 'primeng/card';
+import {filter} from 'rxjs/operators';
 
 export interface Product {
   code: string;
@@ -10,16 +11,30 @@ export interface Product {
   quantity: number;
 }
 
+// export interface User {
+//   address: {street: "Kulas Light", suite: "Apt. 556", city: "Gwenborough", zipcode: "92998-3874", geo: {…}}
+//   company: {name: "Romaguera-Crona", catchPhrase: "Multi-layered client-server neural-net", bs: "harness real-time e-markets"}
+//   email: string;
+//   id: 1
+//   name: "Leanne Graham"
+//   phone: "1-770-736-8031 x56442"
+//   username: "Bret"
+//   website: "hildegard.org"
+// }
+
+const CARS_CATEGORY = 'cars';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, AfterViewInit {
+
+  private usersLoaded$: Subject<boolean>;
   public productsCars: Product[] = [];
   public users: any[] = [];
   public title = 'be-ua';
-  public users$: Observable<any>;
   public products: Product[] = [
     {code: 'CA001', name: 'Tesla', category: 'cars', quantity: 1},
     {code: 'PH01', name: 'Samsung A3', category: 'phones', quantity: 5},
@@ -35,32 +50,50 @@ export class AppComponent implements OnInit, AfterViewInit {
   ];
 
   constructor(private http: HttpClient) {
+    this.usersLoaded$ = new Subject<boolean>();
   }
 
   ngOnInit(): void {
-    this.productsCars = this.products.filter(item => item.category === 'cars').sort((a, b) => a.quantity - b.quantity);
-    this.users$ = this.getClient();
-
-    this.users$.subscribe((users) => {
+    this.productsCars = this.products
+      .filter(item => item.category === CARS_CATEGORY)
+      .sort((a, b) => a.quantity - b.quantity);
+    this.getClients$().subscribe((users) => {
       this.users = users.sort((a, b) => a.id - b.id);
+      this.usersLoaded$.next(true);
     });
   }
 
-  getClient(): Observable<any> {
-    return this.http.get('https://jsonplaceholder.typicode.com/users');
-  }
-
-  addProduct(product): void {
+  addProduct(product: Product): void {
     this.productsCars.push(product);
   }
 
   ngAfterViewInit(): void {
     console.log(this.productsCars);
-    this.users$.subscribe((u) => {
-      console.log(this.users);
+    this.usersLoaded$.subscribe((loaded: boolean) => {
+      if (loaded) {
+        console.log(this.users);
+      }
     });
   }
 
+  hasName(product: Product, carName: string) {
+    return product.name === carName;
+  }
+
+  getFirstProduct() {
+    return CollectionUtils.getFirstItem(this.products);
+  }
+
+  private getClients$(): Observable<any> {
+    return this.http.get('https://jsonplaceholder.typicode.com/users');
+  }
+}
+
+export class CollectionUtils {
+
+  static getFirstItem(arr: any[]) {
+    return arr && arr.length && arr[0];
+  }
 }
 
 // TODO:

@@ -13,7 +13,7 @@
       <ng-template pTemplate="body" let-product>
         <tr>
           <td>{{product.code}}</td>
-          <td [ngClass]="{sale: product.name === 'Volvo'}">{{product.name}}</td>
+          <td [class.sale]="hasName(product, 'Volvo')">{{product.name}}</td>
           <td>{{product.category}}</td>
           <td>{{product.quantity}}</td>
         </tr>
@@ -48,4 +48,4 @@
   </div>
 </div>
 
-<app-child [product]="products[0]" (duplicateProduct)="addProduct($event)"></app-child>
+<app-child [product]="getFirstProduct()" (duplicateProduct)="addProduct($event)"></app-child>
